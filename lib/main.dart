@@ -4,7 +4,9 @@ import 'package:graduation_project/business_logic/signin/cubit/signin_cubit.dart
 import 'package:graduation_project/business_logic/uploadmodels/cubit/braintest_cubit.dart';
 import 'package:graduation_project/presention/screens/sign_in.dart';
 
-void main() => runApp(MidiqApp());
+void main() {
+  runApp(MidiqApp());
+}
 
 class MidiqApp extends StatelessWidget {
   @override

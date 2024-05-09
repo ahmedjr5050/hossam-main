@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graduation_project/business_logic/uploadmodels/cubit/braintest_cubit.dart';
@@ -23,13 +24,15 @@ class _UploadPhotoPageState extends State<UploadPhotoPage> {
     setState(() {
       _imageFile = pickedFile;
     });
-    print(_imageFile?.path);
   }
 
-  void showResult() {
+  void showResult() async {
     if (_imageFile != null && widget.token != null) {
+      MultipartFile file = await MultipartFile.fromFile(_imageFile!.path);
+
+      print(file.filename);
       context.read<BraintestCubit>().uploadBrainTest(
-            image: _imageFile!.path,
+            image: file,
             token: widget.token!,
           );
     } else {
@@ -92,7 +95,7 @@ class _UploadPhotoPageState extends State<UploadPhotoPage> {
                   child: Column(
                     children: [
                       ElevatedButton(
-                        onPressed: showResult, // Call showResult method
+                        onPressed: showResult,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xff21385A),
                           minimumSize: const Size(100, 50),
@@ -102,8 +105,7 @@ class _UploadPhotoPageState extends State<UploadPhotoPage> {
                           style: TextStyle(fontSize: 20, color: Colors.white),
                         ),
                       ),
-                      if (state
-                          is BraintestSuccess) // Display result if it's a success
+                      if (state is BraintestSuccess)
                         Text(state.message.diag ?? ''),
                       if (state is BraintestError) Text(state.error),
                     ],

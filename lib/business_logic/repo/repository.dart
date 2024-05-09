@@ -18,15 +18,22 @@ class HomeRepo {
       throw error; // Rethrow the error to propagate it further if needed
     }
   }
-    Future<dynamic> breastcanser(String endpoint, String token,String image) async {
+
+  Future<dynamic> breastcanser(
+      String endpoint, String token, MultipartFile image) async {
     try {
+      FormData formData = FormData.fromMap({
+        'image': image,
+      });
+
       final response = await _dio.post(
         baseUrl + endpoint,
-        data: {'image': image},
-        options: Options(headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token'
-    }),
+        data: formData,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
       );
       return response.data;
     } catch (error) {
