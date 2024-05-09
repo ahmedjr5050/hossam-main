@@ -106,7 +106,10 @@ class _UploadPhotoPageState extends State<UploadPhotoPage> {
                         ),
                       ),
                       if (state is BraintestSuccess)
-                        Text(state.message.diag ?? ''),
+                        Text(
+                          "Diagnosis: " + state.message.diag ?? '',
+                          style: TextStyle(fontSize: 20),
+                        ),
                       if (state is BraintestError) Text(state.error),
                     ],
                   ),
