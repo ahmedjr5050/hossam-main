@@ -6,7 +6,7 @@ abstract class BraintestState {}
  class BraintestInitial extends BraintestState {}
 class BraintestLoading extends BraintestState {}
 class BraintestSuccess extends BraintestState {
-  final String message;
+  final UserDataResponse message;
   BraintestSuccess(this.message);
 }
 class BraintestError extends BraintestState {

@@ -23,6 +23,18 @@ class _UploadPhotoPageState extends State<UploadPhotoPage> {
     setState(() {
       _imageFile = pickedFile;
     });
+    print(_imageFile?.path);
+  }
+
+  void showResult() {
+    if (_imageFile != null && widget.token != null) {
+      context.read<BraintestCubit>().uploadBrainTest(
+            image: _imageFile!.path,
+            token: widget.token!,
+          );
+    } else {
+      print("Image or token is null");
+    }
   }
 
   @override
@@ -33,75 +45,74 @@ class _UploadPhotoPageState extends State<UploadPhotoPage> {
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const SizedBox(height: 75),
-          Row(
+      body: BlocBuilder<BraintestCubit, BraintestState>(
+        builder: (context, state) {
+          return Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                backgroundImage: _imageFile != null
-                    ? FileImage(File(_imageFile!.path))
-                    : null,
-                radius: 100,
-                backgroundColor: const Color(0xff21385A),
-                child: _imageFile == null
-                    ? const Icon(Icons.photo_library,
-                        size: 125, color: Colors.white)
-                    : null,
+            children: <Widget>[
+              const SizedBox(height: 75),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    backgroundImage: _imageFile != null
+                        ? FileImage(File(_imageFile!.path))
+                        : null,
+                    radius: 100,
+                    backgroundColor: const Color(0xff21385A),
+                    child: _imageFile == null
+                        ? const Icon(Icons.photo_library,
+                            size: 125, color: Colors.white)
+                        : null,
+                  ),
+                ],
               ),
-            ],
-          ),
-          const Spacer(flex: 3),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 30),
-              child: ElevatedButton(
-                onPressed: () {
-                  galleryPicker();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xff21385A),
-                  minimumSize: const Size(100, 50),
-                ),
-                child: const Text(
-                  'Upload Image',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-              ),
-            ),
-          ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 170),
-              child: BlocBuilder<BraintestCubit, BraintestState>(
-                builder: (context, state) {
-                  return ElevatedButton(
+              const Spacer(flex: 3),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 30),
+                  child: ElevatedButton(
                     onPressed: () {
-                      if (widget.token != null && _imageFile != null) {
-                        context.read<BraintestCubit>().uploadBrainTest(
-                              image: _imageFile!.path,
-                              token: widget.token!,
-                            );
-                      } else {
-                        print("token or image is null");
-                      }
+                      galleryPicker();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff21385A),
                       minimumSize: const Size(100, 50),
                     ),
                     child: const Text(
-                      'Show Result',
+                      'Upload Image',
                       style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
-                  );
-                },
+                  ),
+                ),
               ),
-            ),
-          ),
-        ],
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 170),
+                  child: Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: showResult, // Call showResult method
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xff21385A),
+                          minimumSize: const Size(100, 50),
+                        ),
+                        child: const Text(
+                          'Show Result',
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                      ),
+                      if (state
+                          is BraintestSuccess) // Display result if it's a success
+                        Text(state.message.diag ?? ''),
+                      if (state is BraintestError) Text(state.error),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

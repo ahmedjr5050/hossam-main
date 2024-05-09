@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:graduation_project/business_logic/repo/repository.dart';
+import 'package:graduation_project/data/test.dart';
 import 'package:meta/meta.dart';
 
 part 'braintest_state.dart';
@@ -11,7 +12,7 @@ class BraintestCubit extends Cubit<BraintestState> {
     emit(BraintestLoading());
     try {
       final response = await HomeRepo().breastcanser('ai/upload-breast-cancer', token, image);
-      final message = response['diag'];
+      final message = UserDataResponse.fromJson(response);
       emit(BraintestSuccess(message));
     } catch (e) {
       emit(BraintestError('Something went wrong. Please try again.'));
